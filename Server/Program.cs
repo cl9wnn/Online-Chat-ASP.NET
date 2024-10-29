@@ -19,7 +19,7 @@ app.MapGet("/ws", async context =>
         connections.Add(ws);
 
         await Broadcast($"{currentName} joined the room");
-        await Broadcast($"{connections.Count} users connected");
+        await Broadcast($"{connections.Count} users connected\n");
 
         await RecieveMessage(ws, async (result, buffer) =>
         {
@@ -32,7 +32,7 @@ app.MapGet("/ws", async context =>
             {
                 connections.Remove(ws);
                 await Broadcast($"{currentName} lefted room");
-                await Broadcast($"{connections.Count} users connected");
+                await Broadcast($"{connections.Count} users connected\n");
                 await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             }
         });
