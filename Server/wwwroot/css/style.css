@@ -1,0 +1,68 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    font-family: Arial, sans-serif;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container {
+    display: flex;
+    width: 50vh;
+    height: 85vh;
+    background-color: lightgray;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#header-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height:10%;
+    background-color: rgb(142, 142, 142);
+}
+
+#footer-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    height: 15%;
+    background-color: bisque;
+
+}
+
+#messages-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #eb8a8a;
+    border-top: 5px solid #171717;
+    border-bottom: 5px solid #000000;
+}
+
+#user-name {
+    font-family: Arial, sans-serif !important;
+}
+
+#input-message{
+    width: 100%;
+    height: 75%;
+}
+
+.message {
+    font-family: Arial, sans-serif !important;
+    display: inline-block;
+    padding: 5px;
+    margin: 5px 0;
+    background-color: #fffd90;
+    border-radius: 5px;
+    max-width: 80%;
+}

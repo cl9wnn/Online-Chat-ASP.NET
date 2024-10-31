@@ -14,7 +14,7 @@ while (true)
 }
 
 Console.WriteLine("Connecting to server...\n");
-await ws.ConnectAsync(new Uri($"ws://localhost:5241/ws?name={userName}"), CancellationToken.None);
+await ws.ConnectAsync(new Uri($"ws://localhost:5241?name={userName}"), CancellationToken.None);
 Console.WriteLine("Connected!\n To leave chat write \"exit\"\n");
 
 var receiveTask = Task.Run(async () =>

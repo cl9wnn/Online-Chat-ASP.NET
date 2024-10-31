@@ -7,10 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://localhost:5241");
 var app = builder.Build();
 app.UseWebSockets();
+app.UseStaticFiles(); 
 
 var connections = new List<WebSocket>();
 
-app.MapGet("/ws", async context =>
+app.MapGet("/", async context =>
 {
     if (context.WebSockets.IsWebSocketRequest)
     {
@@ -19,20 +20,18 @@ app.MapGet("/ws", async context =>
         connections.Add(ws);
 
         await Broadcast($"{currentName} joined the room");
-        await Broadcast($"{connections.Count} users connected\n");
 
         await RecieveMessage(ws, async (result, buffer) =>
         {
             if (result.MessageType == WebSocketMessageType.Text)
             {
-                string message = Encoding.UTF8.GetString(buffer);
+                string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 await Broadcast($"{currentName}: {message}");
             }
             else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
             {
                 connections.Remove(ws);
                 await Broadcast($"{currentName} lefted room");
-                await Broadcast($"{connections.Count} users connected\n");
                 await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             }
         });
