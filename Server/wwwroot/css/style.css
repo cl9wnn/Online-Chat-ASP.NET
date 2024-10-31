@@ -1,28 +1,36 @@
 body, html {
     height: 100%;
+    width: 100%;
     margin: 0;
     display: flex;
-    font-family: Arial, sans-serif;
     justify-content: center;
     align-items: center;
+    background: radial-gradient(circle, rgb(21,22,76) 0%, rgb(42,44,95) 70%, rgb(63,66,117) 100%);
+
 }
 
 .main-container {
     display: flex;
-    width: 50vh;
-    height: 85vh;
-    background-color: lightgray;
+    width: 55vh;
+    height: 90vh;
+    background-color: rgb(250,251,253);
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.30), 0 0 30px rgba(157, 163, 233, 0.3); 
+    border-radius:18px;
     flex-direction: column;
+    border: 2px solid #0f0329;
     justify-content: space-between;
 }
 
-#header-container{
+#header-container {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height:10%;
-    background-color: rgb(142, 142, 142);
+    height: 10%;
+    background: linear-gradient(to bottom,rgb(231, 231, 255), rgb(175, 175, 239));
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial;
 }
 
 #footer-container{
@@ -32,37 +40,72 @@ body, html {
     flex-direction: row;
     flex-wrap: nowrap;
     width: 100%;
-    height: 15%;
-    background-color: bisque;
-
+    height: 13%;
+    
 }
-
 #messages-container {
     display: flex;
     flex-direction: column;
     flex: 1;
     padding: 10px;
     overflow-y: auto;
-    background-color: #eb8a8a;
-    border-top: 5px solid #171717;
-    border-bottom: 5px solid #000000;
+    border-bottom: 2px solid #aeaeae;
 }
 
-#user-name {
-    font-family: Arial, sans-serif !important;
+#user-text{
+    align-items: center;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', Arial;
 }
 
-#input-message{
-    width: 100%;
-    height: 75%;
+#message-form {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
+
+#input-message {
+    flex: 1; 
+    padding: 10px; 
+    width: 300px;
+    height: 26px;
+    border: 2px solid #c3c3c3; 
+    border-radius: 20px; 
+    outline: none;
+    font-size:18px;
+    transition: border-color 0.3s;
+}
+
+.timestamp{
+    font-size:10px;
+    margin-left:10px;
+    color: gray;
+}
+
+#input-message:focus {
+    border-color: #4c34a0;
+}
+
+#submit-bttn {
+    background-color: #e1e1e1; 
+    padding: 10px 20px;
+    width: 50px;
+    height: 45px;
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background-color 0.3s; 
 }
 
 .message {
-    font-family: Arial, sans-serif !important;
     display: inline-block;
-    padding: 5px;
+    padding: 7px 11px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial;
     margin: 5px 0;
-    background-color: #fffd90;
-    border-radius: 5px;
-    max-width: 80%;
+    font-size: 18px;
+    border-radius: 13px;
+    word-wrap: break-word;
+    max-width: 75%;
+    min-width: 20%;
+    width: fit-content;
 }
