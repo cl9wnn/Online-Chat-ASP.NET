@@ -75,11 +75,37 @@ body, html {
     transition: border-color 0.3s;
 }
 
-.timestamp{
-    font-size:10px;
-    margin-left:10px;
-    color: gray;
+.message {
+    display: flex;
+    flex-direction: row;
+    padding: 7px 11px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial;
+    margin: 5px 0;
+    font-size: 18px;
+    border-radius: 13px;
+    word-wrap: break-word;
+    max-width: 75%;
+    min-width: 20%;
+    width: fit-content;
+    position: relative;
 }
+
+.text-container {
+    margin: 5px 0;
+    display: inline-block;
+    word-wrap: break-word;
+    width: 85%;
+}
+
+.timestamp {
+    color:black;
+    font-size: 10px;
+    color: lightgrey;
+    align-self: flex-end;
+    padding-left:18px;
+    margin-top: 5px;
+}
+
 
 #input-message:focus {
     border-color: #4c34a0;
@@ -95,17 +121,4 @@ body, html {
     cursor: pointer;
     margin-left: 5px;
     transition: background-color 0.3s; 
-}
-
-.message {
-    display: inline-block;
-    padding: 7px 11px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial;
-    margin: 5px 0;
-    font-size: 18px;
-    border-radius: 13px;
-    word-wrap: break-word;
-    max-width: 75%;
-    min-width: 20%;
-    width: fit-content;
 }

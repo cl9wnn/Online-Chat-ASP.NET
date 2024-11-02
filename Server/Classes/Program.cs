@@ -22,23 +22,26 @@ app.MapGet("/", async context =>
 {
     if (context.WebSockets.IsWebSocketRequest)
     {
-        var currentName = context.Request.Query["name"];
         using var ws = await context.WebSockets.AcceptWebSocketAsync();
-        connections.Add(ws);
 
-        await Broadcast($"{currentName} joined the room", MessageType.join);
+        connections.Add(ws);
+        var connectionsCount = connections.Count();
+
+        var currentName = context.Request.Query["name"];
+
+        await Broadcast(new JoinMessage(currentName));
 
         await RecieveMessage(ws, async (result, buffer) =>
         {
             if (result.MessageType == WebSocketMessageType.Text)
             {
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                await Broadcast($"{currentName}: {message}", MessageType.user);
+                await Broadcast(new UserMessage(currentName, message));
             }
             else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
             {
                 connections.Remove(ws);
-                await Broadcast($"{currentName} lefted room", MessageType.leave);
+                await Broadcast(new LeaveMessage(currentName));
                 await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             }
         });
@@ -49,17 +52,9 @@ app.MapGet("/", async context =>
     }
 });
 
-async Task Broadcast(string message, MessageType messageType)
+async Task Broadcast(Message message)
 {
-    string timestamp = DateTime.Now.ToString("HH:mm");
-
-    var messageObject = new
-    {
-        timestamp,
-        text = message,
-        messageType = messageType.ToString(),
-    };
-    var jsonMessage = JsonSerializer.Serialize(messageObject);
+    var jsonMessage = JsonSerializer.Serialize(message);
 
     var bytes = Encoding.UTF8.GetBytes(jsonMessage);
 
@@ -85,3 +80,4 @@ async Task RecieveMessage(WebSocket socket, Action<WebSocketReceiveResult, byte[
 }
 
 app.Run();
+
