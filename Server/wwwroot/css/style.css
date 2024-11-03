@@ -57,6 +57,11 @@ body, html {
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', Arial;
 }
 
+#user-count{
+    color: black;
+    font-size:18px;
+}
+
 #message-form {
     display: flex; 
     justify-content: space-between; 
@@ -78,10 +83,10 @@ body, html {
 .message {
     display: flex;
     flex-direction: row;
-    padding: 7px 11px;
+    padding: 1px 11px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial;
     margin: 5px 0;
-    font-size: 18px;
+    font-size: 16px;
     border-radius: 13px;
     word-wrap: break-word;
     max-width: 75%;
@@ -90,8 +95,12 @@ body, html {
     position: relative;
 }
 
+.text{
+    padding-bottom: 3px;
+}
+
 .text-container {
-    margin: 5px 0;
+    margin: 3px 0;
     display: inline-block;
     word-wrap: break-word;
     width: 85%;
@@ -103,6 +112,7 @@ body, html {
     color: lightgrey;
     align-self: flex-end;
     padding-left:18px;
+    padding-bottom: 4px;
     margin-top: 5px;
 }
 
@@ -122,3 +132,4 @@ body, html {
     margin-left: 5px;
     transition: background-color 0.3s; 
 }
+

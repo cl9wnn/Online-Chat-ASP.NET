@@ -18,18 +18,20 @@ app.MapGet("/chat", async context =>
     await context.Response.SendFileAsync("wwwroot/index.html");
 });
 
+
 app.MapGet("/", async context =>
 {
+
     if (context.WebSockets.IsWebSocketRequest)
     {
         using var ws = await context.WebSockets.AcceptWebSocketAsync();
 
         connections.Add(ws);
-        var connectionsCount = connections.Count();
 
         var currentName = context.Request.Query["name"];
 
         await Broadcast(new JoinMessage(currentName));
+        await BroadcastConnectionCount(connections.Count());
 
         await RecieveMessage(ws, async (result, buffer) =>
         {
@@ -42,6 +44,7 @@ app.MapGet("/", async context =>
             {
                 connections.Remove(ws);
                 await Broadcast(new LeaveMessage(currentName));
+                await BroadcastConnectionCount(connections.Count());
                 await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             }
         });
@@ -69,6 +72,19 @@ async Task Broadcast(Message message)
     }
 }
 
+ async Task BroadcastConnectionCount(int connectionCount)
+{
+    foreach (var connection in connections)
+    {
+        if (connection.State == WebSocketState.Open)
+        {
+            var countMessage = Encoding.UTF8.GetBytes(connectionCount.ToString());
+            var arraySegment = new ArraySegment<byte>(countMessage);
+
+            await connection.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
+    }
+}
 async Task RecieveMessage(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
 {
     var buffer = new byte[1024 * 4];
