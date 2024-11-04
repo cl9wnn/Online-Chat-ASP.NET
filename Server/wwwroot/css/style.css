@@ -5,19 +5,18 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle, rgb(21,22,76) 0%, rgb(42,44,95) 70%, rgb(63,66,117) 100%);
-
+    background: #212226;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial;
 }
 
 .main-container {
     display: flex;
-    width: 55vh;
-    height: 90vh;
-    background-color: rgb(250,251,253);
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.30), 0 0 30px rgba(157, 163, 233, 0.3); 
-    border-radius:18px;
+    width: 47%;
+    height: 90%;
+    background-color: #2b2e35;
+    border: 1px solid #414754;
+    border-radius: 8px;
     flex-direction: column;
-    border: 2px solid #0f0329;
     justify-content: space-between;
 }
 
@@ -27,39 +26,40 @@ body, html {
     justify-content: center;
     width: 100%;
     height: 10%;
-    background: linear-gradient(to bottom,rgb(231, 231, 255), rgb(175, 175, 239));
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial;
+    background: #2f333c;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
-#footer-container{
+#footer-container {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: row;
     flex-wrap: nowrap;
+    background: #2f333c;
     width: 100%;
     height: 13%;
-    
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 #messages-container {
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: 10px;
+    padding: 10px 20px;
     overflow-y: auto;
-    border-bottom: 2px solid #aeaeae;
+    border-bottom: 2px solid #414754;
+    border-top: 2px solid #414754;
 }
 
 #user-text{
     align-items: center;
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', Arial;
 }
 
-#user-count{
-    color: black;
-    font-size:18px;
+#user-count {
+    color: #e0ebff;
+    font-size: 18px;
 }
 
 #message-form {
@@ -69,28 +69,38 @@ body, html {
 }
 
 #input-message {
-    flex: 1; 
-    padding: 10px; 
-    width: 300px;
+    flex: 1;
+    padding: 10px;
+    width: 65vh;
     height: 26px;
-    border: 2px solid #c3c3c3; 
-    border-radius: 20px; 
+    border: 1px solid #414754;
+    background-color: #3C404A;
+    border-radius: 10px;
+    color: whitesmoke;
     outline: none;
-    font-size:18px;
+    font-size: 18px;
     transition: border-color 0.3s;
+}
+
+#input-message::placeholder {
+    color: #787d8b;
+    opacity: 0.8;
+}
+
+#input-message:focus {
+    border-color: #6d7280;
 }
 
 .message {
     display: flex;
     flex-direction: row;
     padding: 1px 11px;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial;
     margin: 5px 0;
-    font-size: 16px;
+    font-size: 17px;
     border-radius: 13px;
     word-wrap: break-word;
-    max-width: 75%;
-    min-width: 20%;
+    max-width: 40%;
+    min-width: 10%;
     width: fit-content;
     position: relative;
 }
@@ -107,29 +117,46 @@ body, html {
 }
 
 .timestamp {
-    color:black;
+    color: black;
     font-size: 10px;
-    color: lightgrey;
+    color: #7E8591;
     align-self: flex-end;
-    padding-left:18px;
+    padding-left: 18px;
     padding-bottom: 4px;
     margin-top: 5px;
 }
 
 
-#input-message:focus {
-    border-color: #4c34a0;
-}
-
 #submit-bttn {
-    background-color: #e1e1e1; 
+    background-color: #3C404A;
+    background-image: url('/resources/send-message.png');
+    background-size: 33px 33px;
+    background-position: center;
+    background-repeat: no-repeat;
     padding: 10px 20px;
     width: 50px;
-    height: 45px;
-    border: none; 
-    border-radius: 5px; 
+    height: 50px;
+    border: none;
+    border-radius: 10px;
     cursor: pointer;
-    margin-left: 5px;
-    transition: background-color 0.3s; 
+    margin-left: 12px;
+    transition: background-color 0.3s;
+    border-bottom: 3px solid #414754;
 }
 
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #3C404A; 
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #666E7D;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #818899;
+    }

@@ -40,11 +40,10 @@ function createTextElement(text, color) {
     textElement.textContent = text;
     return textElement;
 }
-function createTimestampElement(timestamp, color) {
+function createTimestampElement(timestamp) {
     const timestampElement = document.createElement('span');
     timestampElement.className = 'timestamp';
     timestampElement.textContent = timestamp;
-    timestampElement.style.color = color;
     return timestampElement;
 }
 socket.onerror = function (error) {
@@ -87,18 +86,17 @@ class Message {
     constructor(messageData) {
         this.messageData = messageData;
         this.color = 'black';
-        this.timestampColor = 'black'; 
         this.opacity = 1;
     }
 
     createElement() {
         const messageElement = document.createElement('div');
         messageElement.className = 'message';
-        setBackgroundWithAlpha(messageElement, 30, 31, 57, this.opacity);
+        setBackgroundWithAlpha(messageElement, 60, 64, 74, this.opacity);
 
         const textContainer = createTextContainer();
         const textElement = createTextElement(this.messageData.Text, this.color);
-        const timestampElement = createTimestampElement(this.messageData.Timestamp, this.timestampColor);
+        const timestampElement = createTimestampElement(this.messageData.Timestamp);
 
         textContainer.appendChild(textElement);
         messageElement.appendChild(textContainer);
@@ -112,13 +110,12 @@ class UserMessage extends Message {
     constructor(messageData) {
         super(messageData);
         this.color = 'white';
-        this.timestampColor = 'lightgray'; 
         this.opacity = 0.75;
     }
 
     createElement() {
         const messageElement = super.createElement();
-        const userNameElement = createTextElement(this.messageData.UserName, '#b5b5f1');
+        const userNameElement = createTextElement(this.messageData.UserName, '#9DC1FF');
 
         messageElement.querySelector('div').prepend(userNameElement);
         return messageElement;
@@ -128,8 +125,7 @@ class UserMessage extends Message {
 class JoinMessage extends Message {
     constructor(messageData) {
         super(messageData);
-        this.color = 'green';
-        this.timestampColor = 'black'; 
+        this.color = '#019b01';
         this.opacity = 0;
     }
 
@@ -141,8 +137,7 @@ class JoinMessage extends Message {
 class LeaveMessage extends Message {
     constructor(messageData) {
         super(messageData);
-        this.color = 'red';
-        this.timestampColor = 'black'; 
+        this.color = '#bb0000';
         this.opacity = 0;
     }
 
