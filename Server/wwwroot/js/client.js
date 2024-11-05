@@ -1,7 +1,9 @@
 const userName = prompt("Введите ваше имя") || 'anonim';
+const guid = crypto.randomUUID();
 const socket = new WebSocket(`ws://localhost:5241/?name=${encodeURIComponent(userName)}`);
 
 const userCountElement = document.getElementById("user-count");
+
 socket.onmessage = function (event) {
     const messageData = JSON.parse(event.data);
 
@@ -16,6 +18,15 @@ socket.onmessage = function (event) {
     }
 };
 
+socket.onerror = function (error) {
+    console.error('WebSocket Error: ', error);
+};
+
+socket.onclose = function (event) {
+    console.log('WebSocket closed: ', event);
+};
+
+
 function createMessageElement(messageData) {
     const messageTypes = {
         user: UserMessage,
@@ -28,8 +39,9 @@ function createMessageElement(messageData) {
     return messageInstance.createElement();
 }
 
-function createTextContainer(){
+function createTextContainer(width){
     const textContainer = document.createElement('div');
+    textContainer.style.width = width;
     textContainer.className = 'text-container';
     return textContainer;
 }
@@ -46,12 +58,6 @@ function createTimestampElement(timestamp) {
     timestampElement.textContent = timestamp;
     return timestampElement;
 }
-socket.onerror = function (error) {
-    console.error('WebSocket Error: ', error);
-};
-socket.onclose = function (event) {
-    console.log('WebSocket closed: ', event);
-};
 
 document.getElementById('message-form').addEventListener('submit', function (event) {
     event.preventDefault();
@@ -67,40 +73,26 @@ document.getElementById('message-form').addEventListener('submit', function (eve
     }
 });
 
-function setBackgroundWithAlpha(element, r, g, b, alpha) {
-    element.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
 function scrollToBottom(containerId) {
     const container = document.getElementById(containerId);
     container.scrollTop = container.scrollHeight;
 }
 
-const messageStyles = {
-    join: { color: 'green', opacity: '0' },
-    leave: { color: 'red', opacity: '0' },
-    user: { color: 'white', opacity: '0.75' }
-};
-
 class Message {
     constructor(messageData) {
         this.messageData = messageData;
         this.color = 'black';
-        this.opacity = 1;
+        this.width = '85%';
     }
 
-    createElement() {
+    createElement(className) {
         const messageElement = document.createElement('div');
-        messageElement.className = 'message';
-        setBackgroundWithAlpha(messageElement, 60, 64, 74, this.opacity);
-
-        const textContainer = createTextContainer();
+        messageElement.className = className;
+        const textContainer = createTextContainer(this.width);
         const textElement = createTextElement(this.messageData.Text, this.color);
-        const timestampElement = createTimestampElement(this.messageData.Timestamp);
 
         textContainer.appendChild(textElement);
         messageElement.appendChild(textContainer);
-        messageElement.appendChild(timestampElement);
 
         return messageElement;
     }
@@ -110,14 +102,24 @@ class UserMessage extends Message {
     constructor(messageData) {
         super(messageData);
         this.color = 'white';
-        this.opacity = 0.75;
+        this.width = '85%';
     }
 
     createElement() {
-        const messageElement = super.createElement();
-        const userNameElement = createTextElement(this.messageData.UserName, '#9DC1FF');
+        let messageElement;
 
-        messageElement.querySelector('div').prepend(userNameElement);
+        if (this.messageData.UserName === userName) {
+            messageElement = super.createElement('own-message'); 
+        }
+        else {
+            messageElement = super.createElement('other-message');
+            const userNameElement = createTextElement(this.messageData.UserName, '#9DC1FF');
+            messageElement.querySelector('div').prepend(userNameElement);
+        }
+
+        const timestampElement = createTimestampElement(this.messageData.Timestamp);
+        messageElement.appendChild(timestampElement);
+
         return messageElement;
     }
 }
@@ -126,22 +128,21 @@ class JoinMessage extends Message {
     constructor(messageData) {
         super(messageData);
         this.color = '#019b01';
-        this.opacity = 0;
+        this.width = '100%';
     }
 
     createElement() {
-        return super.createElement();
+        return super.createElement('info-message');
     }
 }
-
 class LeaveMessage extends Message {
     constructor(messageData) {
         super(messageData);
         this.color = '#bb0000';
-        this.opacity = 0;
+        this.width = '100%';
     }
 
     createElement() {
-        return super.createElement();
+        return super.createElement('info-message');
     }
 }
