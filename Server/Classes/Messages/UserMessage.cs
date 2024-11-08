@@ -1,8 +1,8 @@
 ﻿public class UserMessage : Message
 {
     public override string Type => "user";
-    public UserMessage(string userName, string text) : base(userName)
+    public UserMessage(User user, string text) : base(user)
     {
-        Text =text;
+        Text = text;
     }
 }

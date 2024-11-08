@@ -2,8 +2,8 @@
 {
     public override string Type => "join";
 
-    public JoinMessage(string userName) : base(userName) 
+    public JoinMessage(User user) : base(user)
     {
-        Text = $"{userName} joined the room";
+        Text = $"{user.Name} joined the room";
     }
 }

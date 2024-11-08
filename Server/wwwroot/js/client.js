@@ -1,20 +1,21 @@
 const userName = prompt("Введите ваше имя") || 'anonim';
-const guid = crypto.randomUUID();
-const socket = new WebSocket(`ws://localhost:5241/?name=${encodeURIComponent(userName)}`);
+const userGuid = crypto.randomUUID();
+
+const socket = new WebSocket(`ws://localhost:5241/?name=${encodeURIComponent(userName)}&guid=${encodeURIComponent(userGuid)}`);
 
 const userCountElement = document.getElementById("user-count");
 
 socket.onmessage = function (event) {
     const messageData = JSON.parse(event.data);
 
-    if (typeof messageData === 'object' && messageData !== null) {
+    if (isNumber(messageData)) {
+        const userCount = messageData;
+        userCountElement.textContent = `Online: ${userCount} users`;
+    }
+    else {
         const messageElement = createMessageElement(messageData);
         document.getElementById('messages-container').appendChild(messageElement);
         scrollToBottom('messages-container');
-    }
-    else {
-        const userCount = messageData;
-        userCountElement.textContent = `Online: ${userCount} users`;
     }
 };
 
@@ -25,7 +26,6 @@ socket.onerror = function (error) {
 socket.onclose = function (event) {
     console.log('WebSocket closed: ', event);
 };
-
 
 function createMessageElement(messageData) {
     const messageTypes = {
@@ -85,9 +85,10 @@ class Message {
         this.width = '85%';
     }
 
-    createElement(className) {
+    createElement(id) {
         const messageElement = document.createElement('div');
-        messageElement.className = className;
+        messageElement.className = 'message';
+        messageElement.id = id;
         const textContainer = createTextContainer(this.width);
         const textElement = createTextElement(this.messageData.Text, this.color);
 
@@ -108,12 +109,12 @@ class UserMessage extends Message {
     createElement() {
         let messageElement;
 
-        if (this.messageData.UserName === userName) {
+        if (this.messageData.User.Id == userGuid) {
             messageElement = super.createElement('own-message'); 
         }
         else {
             messageElement = super.createElement('other-message');
-            const userNameElement = createTextElement(this.messageData.UserName, '#9DC1FF');
+            const userNameElement = createTextElement(this.messageData.User.Name, '#9DC1FF');
             messageElement.querySelector('div').prepend(userNameElement);
         }
 
@@ -145,4 +146,8 @@ class LeaveMessage extends Message {
     createElement() {
         return super.createElement('info-message');
     }
+}
+
+function isNumber(num) {
+    return typeof num === 'number' && !isNaN(num);
 }

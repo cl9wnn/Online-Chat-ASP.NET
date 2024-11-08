@@ -72,7 +72,7 @@ body, html {
 #input-message {
     flex: 1;
     padding: 10px;
-    width: 65vh;
+    width: 68vh;
     height: 26px;
     border: 1px solid #414754;
     background-color: #3C404A;
@@ -92,49 +92,42 @@ body, html {
     border-color: #6d7280;
 }
 
-.info-message {
+
+.message {
     display: flex;
+    flex-direction: row;
+    width: 35%;
+    width: fit-content;
+    position: relative;
+    max-width: 40%;
+    min-width: 10%;
+    font-size: 17px;
+    border-radius: 13px;
+    word-wrap: break-word;
+}
+
+#info-message {
     align-self: center;
     max-width: 100%;
     font-size: 14px;
+    margin-top: 6px;
 }
 
-.own-message {
-    display: flex;
-    flex-direction: row;
+#own-message {
     align-self: flex-start;
     margin-left: 10px;
     margin: 4px 0;
-    font-size: 17px;
-    border-radius: 13px;
-    width: 35%;
     background-color: #212226;
     padding: 7px 11px;
-    word-wrap: break-word;
-    max-width: 40%;
-    min-width: 10%;
-    width: fit-content;
-    position: relative;
 }
 
-.other-message {
-    display: flex;
-    flex-direction: row;
+#other-message {
     align-self: flex-end;
     margin-right: 10px;
     margin: 5px 0;
-    font-size: 17px;
-    border-radius: 13px;
-    width: 35%;
     background-color: #494E5A;
     padding: 3px 11px;
-    word-wrap: break-word;
-    max-width: 40%;
-    min-width: 10%;
-    width: fit-content;
-    position: relative;
 }
-
 
 .text {
     padding-bottom: 3px;
@@ -156,10 +149,7 @@ body, html {
     margin-top: 5px;
 }
 
-
-#submit-bttn {
-    background-color: #3C404A;
-    background-image: url('/resources/send-message.png');
+.bttn {
     background-size: 33px 33px;
     background-position: center;
     background-repeat: no-repeat;
@@ -169,9 +159,20 @@ body, html {
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    margin-left: 12px;
-    transition: background-color 0.3s;
+}
+
+#submit-bttn {
+    background-color: #3C404A;
+    background-image: url('/resources/send-message.png');
     border-bottom: 3px solid #414754;
+    margin-left: 12px;
+}
+
+#clip-bttn {
+    background-color: transparent;
+    background-image: url('/resources/clip.png');
+    width: 55px;
+    height: 55px;
 }
 
 

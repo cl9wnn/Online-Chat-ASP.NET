@@ -29,8 +29,11 @@ app.MapGet("/", async context =>
         connections.Add(ws);
 
         var currentName = context.Request.Query["name"];
+        var currentGuid = context.Request.Query["guid"];
 
-        await Broadcast(new JoinMessage(currentName));
+        var userInfo = new User(currentGuid, currentName);
+
+        await Broadcast(new JoinMessage(userInfo));
         await BroadcastConnectionCount(connections.Count());
 
         await RecieveMessage(ws, async (result, buffer) =>
@@ -38,12 +41,12 @@ app.MapGet("/", async context =>
             if (result.MessageType == WebSocketMessageType.Text)
             {
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                await Broadcast(new UserMessage(currentName, message));
+                await Broadcast(new UserMessage(userInfo, message));
             }
             else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
             {
                 connections.Remove(ws);
-                await Broadcast(new LeaveMessage(currentName));
+                await Broadcast(new LeaveMessage(userInfo));
                 await BroadcastConnectionCount(connections.Count());
                 await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             }
@@ -72,7 +75,7 @@ async Task Broadcast(Message message)
     }
 }
 
- async Task BroadcastConnectionCount(int connectionCount)
+async Task BroadcastConnectionCount(int connectionCount)
 {
     foreach (var connection in connections)
     {
@@ -96,4 +99,3 @@ async Task RecieveMessage(WebSocket socket, Action<WebSocketReceiveResult, byte[
 }
 
 app.Run();
-
