@@ -74,7 +74,6 @@ async Task Broadcast(Message message)
         }
     }
 }
-
 async Task BroadcastConnectionCount(int connectionCount)
 {
     foreach (var connection in connections)
