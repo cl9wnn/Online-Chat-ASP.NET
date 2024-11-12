@@ -11,6 +11,8 @@ const colorPool = {
     5: 'rgb(245, 86, 86)',
     6: 'rgb(227, 152, 152)',
     7: 'rgb(250, 176, 76)',
+    8: 'rgb(86, 245,168)',
+    9: 'rgb(186,86,245)'
 }
 
 export class UserMessage extends Message {

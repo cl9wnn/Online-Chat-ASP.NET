@@ -33,21 +33,21 @@ app.MapGet("/", async context =>
 
         var userInfo = new User(currentGuid, currentName);
 
-        await Broadcast(new JoinMessage(userInfo));
-        await BroadcastConnectionCount(connections.Count());
+        await SendMessage(new JoinMessage(userInfo));
+        await SendMessage(connections.Count());
 
         await RecieveMessage(ws, async (result, buffer) =>
         {
             if (result.MessageType == WebSocketMessageType.Text)
             {
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                await Broadcast(new UserMessage(userInfo, message));
+                await SendMessage(new UserMessage(userInfo, message));
             }
             else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
             {
                 connections.Remove(ws);
-                await Broadcast(new LeaveMessage(userInfo));
-                await BroadcastConnectionCount(connections.Count());
+                await SendMessage(new LeaveMessage(userInfo));
+                await SendMessage(connections.Count());
                 await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             }
         });
@@ -58,38 +58,26 @@ app.MapGet("/", async context =>
     }
 });
 
-async Task Broadcast(Message message)
+async Task SendMessage<T>(T message)
 {
     var jsonMessage = JsonSerializer.Serialize(message);
 
     var bytes = Encoding.UTF8.GetBytes(jsonMessage);
+    var arraySegment = new ArraySegment<byte>(bytes);
 
     foreach (var socket in connections)
     {
         if (socket.State == WebSocketState.Open)
         {
-            var arraySegment = new ArraySegment<byte>(bytes);
             await socket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
 
         }
     }
 }
-async Task BroadcastConnectionCount(int connectionCount)
-{
-    foreach (var connection in connections)
-    {
-        if (connection.State == WebSocketState.Open)
-        {
-            var countMessage = Encoding.UTF8.GetBytes(connectionCount.ToString());
-            var arraySegment = new ArraySegment<byte>(countMessage);
 
-            await connection.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
-        }
-    }
-}
 async Task RecieveMessage(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
 {
-    var buffer = new byte[1024 * 4];
+    var buffer = new byte[1024 * 8];
     while (socket.State == WebSocketState.Open)
     {
         var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
