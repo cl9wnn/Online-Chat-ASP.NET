@@ -8,21 +8,37 @@
     <title>Chatik</title>
 </head>
 <body>
+    <img id="test-image" src="" alt="Alternate Text" width="200" height="200"/>
+
     <div class="main-container">
         <div id="header-container">
             <h2 id="user-count"></h2>
         </div>
 
         <div id="messages-container"></div>
-
         <div id="footer-container">
+            <div id="image-upload-form">
+                <button class="bttn" id="clip-bttn" type="button"></button>
+                <input id="file-input" type="file" accept="image/*" style="display: none;">
+            </div>
+
             <form id="message-form" action="">
-                <button class="bttn" id="clip-bttn" type="submit"></button>
                 <input id="input-message" type="text" placeholder="Введите текст" required>
                 <button class="bttn" id="submit-bttn" type="submit"></button>
             </form>
         </div>
     </div>
-    <script type="module" src="/js/script.js"></script>
+    <div id="modal-container" style="display: none;">
+        <div id="preview-container">
+            <button id="close-bttn">&times;</button>
+            <img id="image-preview" alt="Image Preview">
+            <div class="button-container">
+                <button class="image-bttn" id="send-image-bttn">Send image</button>
+                <button class="image-bttn" id="change-image-bttn">Change image</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/js/classes/script.js"></script>
+    <script type="module" src="/js/classes/ImageLoader.js"></script>
 </body>
 </html>

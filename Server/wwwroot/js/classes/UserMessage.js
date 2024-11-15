@@ -1,19 +1,17 @@
 ﻿import { Message } from './Message.js';
 
-
 const userColors = {};
-
-const colorPool = {
-    1: 'rgb(130, 245, 86)',
-    2: 'rgb(86, 200, 245)',
-    3: 'rgb(225, 86, 245)',
-    4: 'rgb(245, 225, 86)',
-    5: 'rgb(245, 86, 86)',
-    6: 'rgb(227, 152, 152)',
-    7: 'rgb(250, 176, 76)',
-    8: 'rgb(86, 245,168)',
-    9: 'rgb(186,86,245)'
-}
+const colorPool = [
+    'rgb(130, 245, 86)',
+    'rgb(86, 200, 245)',
+    'rgb(225, 86, 245)',
+    'rgb(245, 225, 86)',
+    'rgb(245, 86, 86)',
+    'rgb(227, 152, 152)',
+    'rgb(250, 176, 76)',
+    'rgb(86, 245,168)',
+    'rgb(186,86,245)'
+];
 
 export class UserMessage extends Message {
     constructor(messageData) {
@@ -23,14 +21,13 @@ export class UserMessage extends Message {
     }
 
     createElement() {
-        let messageElement;
+        const isOwnMessage = this.messageData.User.Id === window.userGuid;
+        const messageClass = isOwnMessage ? 'own-message' : 'other-message';
+        const messageElement = super.createElement(messageClass);
 
-        if (this.messageData.User.Id == window.userGuid) {
-            messageElement = super.createElement('own-message');
-        } else {
+        if (!isOwnMessage) {
             const color = this.getUserColor(this.messageData.User.Id);
-            messageElement = super.createElement('other-message');
-            const userNameElement = super.createTextElement(this.messageData.User.Name, color);
+            const userNameElement = this.createUserNameElement(this.messageData.User.Name, color);
             messageElement.querySelector('div').prepend(userNameElement);
         }
 
@@ -47,15 +44,23 @@ export class UserMessage extends Message {
         return timestampElement;
     }
 
+    createUserNameElement(name, color) {
+        const userNameElement = super.createTextElement(name, color);
+        userNameElement.className = 'username';
+        return userNameElement;
+    }
+
     getUserColor(userId) {
         if (!userColors[userId]) {
-            userColors[userId] = getRandomColor();
+            userColors[userId] = getNextColor();
         }
         return userColors[userId];
     }
 }
 
-function getRandomColor() {
-    const randomNumber = Math.floor(Math.random() * 7) + 1;
-    return colorPool[randomNumber];
+let colorIndex = 0;
+function getNextColor() {
+    const color = colorPool[colorIndex];
+    colorIndex = (colorIndex + 1) % colorPool.length;
+    return color;
 }

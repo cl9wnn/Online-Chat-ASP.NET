@@ -1,8 +1,8 @@
-﻿public class LeaveMessage : Message
+﻿public class LeaveMessage : Message<string>
 {
     public override string Type => "leave";
     public LeaveMessage(User user) : base(user)
     {
-        Text = $"{user.Name} left the room";
+        Data = $"{user.Name} left the room";
     }
 }

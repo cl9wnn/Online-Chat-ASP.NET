@@ -10,7 +10,7 @@
         messageElement.className = 'message';
         messageElement.id = id;
         const textContainer = this.createTextContainer(this.width);
-        const textElement = this.createTextElement(this.messageData.Text, this.color);
+        const textElement = this.createTextElement(this.messageData.Data, this.color);
 
         textContainer.appendChild(textElement);
         messageElement.appendChild(textContainer);

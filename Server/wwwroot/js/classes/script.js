@@ -1,28 +1,48 @@
-import { Message } from './classes/Message.js';
-import { UserMessage } from './classes/UserMessage.js';
-import { JoinMessage } from './classes/JoinMessage.js';
-import { LeaveMessage } from './classes/LeaveMessage.js';
+import { Message } from './Message.js';
+import { UserMessage } from './UserMessage.js';
+import { JoinMessage } from './JoinMessage.js';
+import { LeaveMessage } from './LeaveMessage.js';
 
 window.userName = prompt("Введите ваше имя") || 'anonim';
 window.userGuid = crypto.randomUUID();
 
-const socket = new WebSocket(`ws://localhost:5241/?name=${encodeURIComponent(window.userName)}&guid=${encodeURIComponent(window.userGuid)}`);
+export const socket = new WebSocket(`ws://localhost:5241/?name=${encodeURIComponent(window.userName)}&guid=${encodeURIComponent(window.userGuid)}`);
+
+let imageChunks = [];
 
 socket.onmessage = function (event) {
     const messageData = JSON.parse(event.data);
+    console.log(messageData);
 
     if (isNumber(messageData)) {
-        const userCount = messageData;
-
         const userCountElement = document.getElementById("user-count");
-        userCountElement.textContent = `Online: ${userCount} users`;
+        userCountElement.textContent = `Online: ${messageData} users`;
     }
-    else {
+    else if (messageData.Type === 'image') {
+        let byteArray = new Uint8Array(atob(messageData.Data).split('').map(char => char.charCodeAt(0)));
+        imageChunks.push(byteArray);
+
+        if (messageData.IsLastChunk == true) {
+            finalizeImage();
+        }
+    }
+    else { 
         const messageElement = createMessageElement(messageData);
         document.getElementById('messages-container').appendChild(messageElement);
         scrollToBottom('messages-container');
     }
 };
+
+function finalizeImage() {
+    const fullBlob = new Blob(imageChunks, { type: "image/png" });
+
+    imageChunks = [];
+
+    const imageUrl = URL.createObjectURL(fullBlob);
+
+    const img = document.getElementById("test-image");
+    img.src = imageUrl;
+}
 
 socket.onerror = function (error) {
     console.error('WebSocket Error: ', error);

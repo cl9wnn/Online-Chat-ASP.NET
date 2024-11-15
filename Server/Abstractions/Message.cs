@@ -1,9 +1,9 @@
-﻿public abstract class Message
+﻿public abstract class Message<T>
 {
     public string Timestamp { get; } = DateTime.Now.ToString("HH:mm");
     public abstract string Type { get; }
     public User? User { get; }
-    public string? Text { get; set; }
+    public T? Data { get; set; }
 
     public Message(User user)
     {

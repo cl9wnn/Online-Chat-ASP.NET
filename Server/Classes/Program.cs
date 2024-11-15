@@ -43,6 +43,15 @@ app.MapGet("/", async context =>
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 await SendMessage(new UserMessage(userInfo, message));
             }
+            else if (result.MessageType == WebSocketMessageType.Binary)
+            {
+                var imageData = new byte[result.Count];
+                Array.Copy(buffer, imageData, result.Count);
+
+                //деление на пакеты и пометка последнего пакета 
+                await SendMessage(new ImageMessage(userInfo, imageData, isLastChunk:true));
+
+            }
             else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
             {
                 connections.Remove(ws);
@@ -75,9 +84,10 @@ async Task SendMessage<T>(T message)
     }
 }
 
+
 async Task RecieveMessage(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
 {
-    var buffer = new byte[1024 * 8];
+    var buffer = new byte[1024 * 48];
     while (socket.State == WebSocketState.Open)
     {
         var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
