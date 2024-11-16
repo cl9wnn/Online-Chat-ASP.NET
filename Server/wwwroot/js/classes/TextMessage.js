@@ -13,7 +13,7 @@ const colorPool = [
     'rgb(186,86,245)'
 ];
 
-export class UserMessage extends Message {
+export class TextMessage extends Message {
     constructor(messageData) {
         super(messageData);
         this.color = 'white';

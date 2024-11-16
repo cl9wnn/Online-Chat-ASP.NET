@@ -1,5 +1,5 @@
 import { Message } from './Message.js';
-import { UserMessage } from './UserMessage.js';
+import { TextMessage } from './TextMessage.js';
 import { JoinMessage } from './JoinMessage.js';
 import { LeaveMessage } from './LeaveMessage.js';
 
@@ -40,7 +40,7 @@ function finalizeImage() {
 
     const imageUrl = URL.createObjectURL(fullBlob);
 
-    const img = document.getElementById("test-image");
+    const img = document.getElementById("image-message");
     img.src = imageUrl;
 }
 
@@ -54,7 +54,7 @@ socket.onclose = function (event) {
 
 function createMessageElement(messageData) {
     const messageTypes = {
-        user: UserMessage,
+        text: TextMessage,
         join: JoinMessage,
         leave: LeaveMessage,
     };

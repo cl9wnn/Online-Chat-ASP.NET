@@ -31,9 +31,9 @@ app.MapGet("/", async context =>
         var currentName = context.Request.Query["name"];
         var currentGuid = context.Request.Query["guid"];
 
-        var userInfo = new User(currentGuid, currentName);
+        var user = new User(currentGuid, currentName);
 
-        await SendMessage(new JoinMessage(userInfo));
+        await SendMessage(new JoinMessage(user));
         await SendMessage(connections.Count());
 
         await RecieveMessage(ws, async (result, buffer) =>
@@ -41,21 +41,17 @@ app.MapGet("/", async context =>
             if (result.MessageType == WebSocketMessageType.Text)
             {
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                await SendMessage(new UserMessage(userInfo, message));
+                await SendMessage(new TextMessage(user, message));
             }
             else if (result.MessageType == WebSocketMessageType.Binary)
             {
-                var imageData = new byte[result.Count];
-                Array.Copy(buffer, imageData, result.Count);
-
-                //деление на пакеты и пометка последнего пакета 
-                await SendMessage(new ImageMessage(userInfo, imageData, isLastChunk:true));
+                await SendImageMessage(buffer, 1024*64, user);
 
             }
             else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
             {
                 connections.Remove(ws);
-                await SendMessage(new LeaveMessage(userInfo));
+                await SendMessage(new LeaveMessage(user));
                 await SendMessage(connections.Count());
                 await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             }
@@ -66,6 +62,24 @@ app.MapGet("/", async context =>
         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
     }
 });
+
+async Task SendImageMessage(byte[] imageData, int chunkSize, User user)
+{
+    int totalChunks = (imageData.Length + chunkSize - 1) / chunkSize; 
+
+    for (int i = 0; i < totalChunks; i++)
+    {
+        int offset = i * chunkSize; 
+        int currentChunkSize = Math.Min(chunkSize, imageData.Length - offset); 
+
+        var chunk = new byte[currentChunkSize];
+        Array.Copy(imageData, offset, chunk, 0, currentChunkSize);
+
+        bool isLastChunk = (i == totalChunks - 1);
+        
+        await SendMessage(new ImageMessage(user, chunk, isLastChunk));
+    }
+}
 
 async Task SendMessage<T>(T message)
 {
@@ -84,14 +98,21 @@ async Task SendMessage<T>(T message)
     }
 }
 
-
 async Task RecieveMessage(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
 {
-    var buffer = new byte[1024 * 48];
+    var buffer = new byte[1024];
+    var fullMessage = new List<byte>(); 
+
     while (socket.State == WebSocketState.Open)
     {
         var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-        handleMessage(result, buffer);
+        fullMessage.AddRange(buffer.Take(result.Count));
+
+        if (result.EndOfMessage)
+        {
+            handleMessage(result, fullMessage.ToArray());
+            fullMessage.Clear();
+        }
     }
 }
 
