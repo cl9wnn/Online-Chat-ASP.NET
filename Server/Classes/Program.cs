@@ -5,7 +5,7 @@ using System.Text.Json;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://localhost:5241");
+builder.WebHost.UseUrls("http://localhost:34101");
 var app = builder.Build();
 app.UseWebSockets();
 app.UseStaticFiles();

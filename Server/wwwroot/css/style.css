@@ -53,6 +53,10 @@ body, html {
     border-top: 2px solid #414754;
 }
 
+.username {
+    padding-bottom: 4px;
+    font-size:15px;
+}
 #user-text{
     align-items: center;
     width: 100%;
@@ -96,7 +100,7 @@ body, html {
 .message {
     display: flex;
     flex-direction: row;
-    width: 35%;
+    width: 40%;
     width: fit-content;
     position: relative;
     max-width: 40%;
@@ -106,14 +110,21 @@ body, html {
     word-wrap: break-word;
 }
 
+.message-image {
+    width: 100%;
+    height:auto;
+    border-radius: 10px;
+}
+
 #info-message {
     align-self: center;
     max-width: 100%;
     font-size: 14px;
     margin-top: 6px;
+    margin-bottom: 2px;
 }
 
-#own-message {
+#own-message, #own-image-message {
     align-self: flex-start;
     margin-left: 10px;
     margin: 4px 0;
@@ -121,12 +132,19 @@ body, html {
     padding: 7px 11px;
 }
 
-#other-message {
+#other-message, #other-image-message {
     align-self: flex-end;
     margin-right: 10px;
     margin: 5px 0;
     background-color: #494E5A;
     padding: 3px 11px;
+}
+
+#own-image-message {
+    background-color: #00000000;
+}
+#other-image-message {
+    background-color: #00000000;
 }
 
 .text {

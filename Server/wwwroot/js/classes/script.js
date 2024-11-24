@@ -2,17 +2,17 @@ import { Message } from './Message.js';
 import { TextMessage } from './TextMessage.js';
 import { JoinMessage } from './JoinMessage.js';
 import { LeaveMessage } from './LeaveMessage.js';
+import { ImageMessage } from './ImageMessage.js';
 
 window.userName = prompt("Введите ваше имя") || 'anonim';
 window.userGuid = crypto.randomUUID();
 
-export const socket = new WebSocket(`ws://localhost:5241/?name=${encodeURIComponent(window.userName)}&guid=${encodeURIComponent(window.userGuid)}`);
+export const socket = new WebSocket(`ws://localhost:34101/?name=${encodeURIComponent(window.userName)}&guid=${encodeURIComponent(window.userGuid)}`);
 
 let imageChunks = [];
 
 socket.onmessage = function (event) {
     const messageData = JSON.parse(event.data);
-    console.log(messageData);
 
     if (isNumber(messageData)) {
         const userCountElement = document.getElementById("user-count");
@@ -23,7 +23,10 @@ socket.onmessage = function (event) {
         imageChunks.push(byteArray);
 
         if (messageData.IsLastChunk == true) {
-            finalizeImage();
+            const imageUrl = createImageURL();
+            const messageInstance = new ImageMessage(messageData, imageUrl);
+            const imageMessage = messageInstance.createElement();
+            document.getElementById('messages-container').appendChild(imageMessage);
         }
     }
     else { 
@@ -33,15 +36,11 @@ socket.onmessage = function (event) {
     }
 };
 
-function finalizeImage() {
+function createImageURL() {
     const fullBlob = new Blob(imageChunks, { type: "image/png" });
-
     imageChunks = [];
-
     const imageUrl = URL.createObjectURL(fullBlob);
-
-    const img = document.getElementById("image-message");
-    img.src = imageUrl;
+    return imageUrl;
 }
 
 socket.onerror = function (error) {

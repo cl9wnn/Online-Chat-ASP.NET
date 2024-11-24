@@ -1,18 +1,7 @@
 ﻿import { Message } from './Message.js';
+import { ColorManager } from './ColorManager.js';
 
-const userColors = {};
-const colorPool = [
-    'rgb(130, 245, 86)',
-    'rgb(86, 200, 245)',
-    'rgb(225, 86, 245)',
-    'rgb(245, 225, 86)',
-    'rgb(245, 86, 86)',
-    'rgb(227, 152, 152)',
-    'rgb(250, 176, 76)',
-    'rgb(86, 245,168)',
-    'rgb(186,86,245)'
-];
-
+const colorManager = new ColorManager();
 export class TextMessage extends Message {
     constructor(messageData) {
         super(messageData);
@@ -22,11 +11,11 @@ export class TextMessage extends Message {
 
     createElement() {
         const isOwnMessage = this.messageData.User.Id === window.userGuid;
-        const messageClass = isOwnMessage ? 'own-message' : 'other-message';
-        const messageElement = super.createElement(messageClass);
+        const messageId = isOwnMessage ? 'own-message' : 'other-message';
+        const messageElement = super.createElement(messageId);
 
         if (!isOwnMessage) {
-            const color = this.getUserColor(this.messageData.User.Id);
+            const color = colorManager.getUserColor(this.messageData.User.Id);
             const userNameElement = this.createUserNameElement(this.messageData.User.Name, color);
             messageElement.querySelector('div').prepend(userNameElement);
         }
@@ -49,18 +38,4 @@ export class TextMessage extends Message {
         userNameElement.className = 'username';
         return userNameElement;
     }
-
-    getUserColor(userId) {
-        if (!userColors[userId]) {
-            userColors[userId] = getNextColor();
-        }
-        return userColors[userId];
-    }
-}
-
-let colorIndex = 0;
-function getNextColor() {
-    const color = colorPool[colorIndex];
-    colorIndex = (colorIndex + 1) % colorPool.length;
-    return color;
 }
